@@ -10,9 +10,12 @@ namespace Game.Infrastructure.Data.MoqLocalDb
         public static LocalDb Current { get; } = new LocalDb();
 
         public IEnumerable<Choice> Choices { get; set; }
+        public List<GameResultHistory> GameResultHistories { get; set; }
 
         public LocalDb()
         {
+            GameResultHistories = new List<GameResultHistory>();
+
             Choices = new List<Choice>()
             {
                 new Choice

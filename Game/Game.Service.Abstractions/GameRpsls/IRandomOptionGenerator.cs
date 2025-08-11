@@ -10,7 +10,7 @@ namespace Game.Service.Abstractions.GameRpsls
         /// <summary>
         /// Return randomly chosen game option
         /// </summary>
-        /// <returns>Enum value of <see cref="Choice"/></returns>
-        Task<Choice> GenerateRandomOptionAsync();
+        /// <returns>Enum value of <see cref="GameRpslsChoice"/></returns>
+        Task<GameRpslsChoice> GenerateRandomOptionAsync();
     }
 }

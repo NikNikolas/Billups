@@ -1,4 +1,5 @@
-﻿using Game.Domain.DTO.GameRpsls.InternalModels;
+﻿using Game.Domain.Data.Abstractions.Entities.GameRpsls;
+using Game.Domain.DTO.GameRpsls.InternalModels;
 using Game.Domain.DTO.GameRpsls.Requests;
 using Game.Infrastructure.Utilities.Enums.Rpsls;
 using Game.Service.Abstractions.Validators;
@@ -23,7 +24,7 @@ namespace Game.Service.Validators
                 throw new ArgumentNullException(nameof(request));
             }
 
-            if (!Enum.IsDefined(typeof(Choice), request.Player))
+            if (!Enum.IsDefined(typeof(GameRpslsChoice), request.Player))
             {
                 throw new ArgumentException($"Invalid value of parameter {nameof(request.Player)}.");
             }
@@ -36,14 +37,22 @@ namespace Game.Service.Validators
                 throw new ArgumentNullException(nameof(request));
             }
 
-            if (!Enum.IsDefined(typeof(Choice), request.PlayerChoice))
+            if (!Enum.IsDefined(typeof(GameRpslsChoice), request.PlayerChoice))
             {
                 throw new ArgumentException($"Invalid value of parameter {nameof(request.PlayerChoice)}.");
             }
 
-            if (!Enum.IsDefined(typeof(Choice), request.ComputerChoice))
+            if (!Enum.IsDefined(typeof(GameRpslsChoice), request.ComputerChoice))
             {
                 throw new ArgumentException($"Invalid value of parameter {nameof(request.ComputerChoice)}.");
+            }
+        }
+
+        public void ValidateGameResultHistory(GameResultHistory newRecord)
+        {
+            if (newRecord == null)
+            {
+                throw new ArgumentNullException(nameof(newRecord));
             }
         }
     }

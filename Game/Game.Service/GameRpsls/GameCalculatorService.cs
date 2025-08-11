@@ -28,14 +28,14 @@ namespace Game.Service.GameRpsls
         /// <summary>
         /// Dictionary where the key represents choice and the value represents list of choices 'weaker' then the choice from the key
         /// </summary>
-        private static readonly Dictionary<Choice, IEnumerable<Choice>> DominatesChoices =
-            new Dictionary<Choice, IEnumerable<Choice>>
+        private static readonly Dictionary<GameRpslsChoice, IEnumerable<GameRpslsChoice>> DominatesChoices =
+            new Dictionary<GameRpslsChoice, IEnumerable<GameRpslsChoice>>
             {
-                { Choice.Rock, new List<Choice>(){Choice.Lizard, Choice.Scissors}},
-                { Choice.Paper, new List<Choice>(){Choice.Rock, Choice.Spock}},
-                { Choice.Scissors, new List<Choice>(){Choice.Paper, Choice.Lizard}},
-                { Choice.Lizard, new List<Choice>(){Choice.Paper, Choice.Spock}},
-                { Choice.Spock, new List<Choice>(){Choice.Scissors, Choice.Rock}},
+                { GameRpslsChoice.Rock, new List<GameRpslsChoice>(){GameRpslsChoice.Lizard, GameRpslsChoice.Scissors}},
+                { GameRpslsChoice.Paper, new List<GameRpslsChoice>(){GameRpslsChoice.Rock, GameRpslsChoice.Spock}},
+                { GameRpslsChoice.Scissors, new List<GameRpslsChoice>(){GameRpslsChoice.Paper, GameRpslsChoice.Lizard}},
+                { GameRpslsChoice.Lizard, new List<GameRpslsChoice>(){GameRpslsChoice.Paper, GameRpslsChoice.Spock}},
+                { GameRpslsChoice.Spock, new List<GameRpslsChoice>(){GameRpslsChoice.Scissors, GameRpslsChoice.Rock}},
             };
         /// <summary>
         /// Calculate game result from player perspective.
@@ -55,7 +55,7 @@ namespace Game.Service.GameRpsls
             //Get list of game choices that are 'weaker' then the chosen player choice
             //If a computer choice is in that list then player is winner and the calculation result in Win.
             //Otherwise the winner is computer and the result is Lose
-            IEnumerable<Choice> dominatedChoicesForUserChoice = new List<Choice>();
+            IEnumerable<GameRpslsChoice> dominatedChoicesForUserChoice = new List<GameRpslsChoice>();
             DominatesChoices.TryGetValue(request.PlayerChoice, out dominatedChoicesForUserChoice);
 
             bool isInDominatesList = dominatedChoicesForUserChoice.Contains(request.ComputerChoice);

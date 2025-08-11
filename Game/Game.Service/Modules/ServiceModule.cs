@@ -28,6 +28,7 @@ namespace Game.Service.Modules
             builder.RegisterType<RandomOptionGenerator>().As<IRandomOptionGenerator>();
             builder.RegisterType<GameRpslsValidator>().As<IGameRpslsValidator>();
             builder.RegisterType<GameCalculatorService>().As<IGameCalculatorService>();
+            builder.RegisterType<GameResultHistoryService>().As<IGameResultHistoryService>();
             builder.RegisterType<GameService>().As<IGameService>();
         }
 

@@ -1,5 +1,6 @@
 ﻿using Game.Domain.Data.Abstractions.Repositories.GameRpsls;
 using AutoMapper;
+using Game.Domain.Data.Abstractions.Entities.GameRpsls;
 using Game.Domain.DTO.GameRpsls.InternalModels;
 using Game.Service.Abstractions.GameRpsls;
 using Game.Service.Abstractions.Validators;
@@ -30,6 +31,8 @@ namespace Game.Service.GameRpsls
         /// Property for accessing implementation of interface <see cref="IGameCalculatorService"/>
         /// </summary>
         private readonly IGameCalculatorService _gameCalculatorService;
+
+        private readonly IGameResultHistoryService _gameResultHistoryService;
         /// <summary>
         /// Property for accessing implementation of interface <see cref="IMapper"/> for mapping object
         /// </summary>
@@ -42,15 +45,17 @@ namespace Game.Service.GameRpsls
         /// <param name="randomOptionGenerator">Implementation of interface <see cref="IRandomOptionGenerator"/></param>
         /// <param name="gameRpslsValidator">Implementation of interface <see cref="IGameRpslsValidator"/></param>
         /// <param name="gameCalculatorService">Implementation of interface <see cref="IGameCalculatorService"/></param>
+        /// <param name="gameResultHistoryService">Implementation of interface <see cref="IGameResultHistoryService"/></param>
         /// <param name="mapper">Implementation of interface <see cref="IMapper"/></param>
         /// <exception cref="ArgumentNullException"></exception>
         public GameService(IChoiceRepository choiceRepository, IRandomOptionGenerator randomOptionGenerator, IGameRpslsValidator gameRpslsValidator,
-            IGameCalculatorService gameCalculatorService, IMapper mapper)
+            IGameCalculatorService gameCalculatorService, IGameResultHistoryService gameResultHistoryService, IMapper mapper)
         {
             _choiceRepository = choiceRepository ?? throw new ArgumentNullException(nameof(choiceRepository));
             _randomOptionGenerator = randomOptionGenerator ?? throw new ArgumentNullException(nameof(randomOptionGenerator));
             _gameRpslsValidator = gameRpslsValidator ?? throw new ArgumentNullException(nameof(gameRpslsValidator));
             _gameCalculatorService = gameCalculatorService ?? throw new ArgumentNullException(nameof(gameCalculatorService));
+            _gameResultHistoryService = gameResultHistoryService ?? throw new ArgumentNullException(nameof(gameResultHistoryService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
@@ -73,7 +78,7 @@ namespace Game.Service.GameRpsls
         /// <returns>DTO class <see cref="GetChoiceResponse"/></returns>
         public async Task<GetChoiceResponse> GetCustomChoiceAsync()
         {
-            Choice randomChoice = await _randomOptionGenerator.GenerateRandomOptionAsync();
+            GameRpslsChoice randomChoice = await _randomOptionGenerator.GenerateRandomOptionAsync();
 
             var choice = await _choiceRepository.GetByIdAsync((int)randomChoice);
 
@@ -96,11 +101,17 @@ namespace Game.Service.GameRpsls
 
             GameCalculationRequest calculationRequest = new GameCalculationRequest
             {
-                PlayerChoice = (Choice)request.Player,
+                PlayerChoice = (GameRpslsChoice)request.Player,
                 ComputerChoice = computerChoice
             };
 
             var gameResult = _gameCalculatorService.Calculate(calculationRequest);
+
+            var history = _mapper.Map<GameResultHistory>(calculationRequest);
+            history.Result = gameResult;
+            history.PlayedDateTime = DateTime.UtcNow;
+
+            await _gameResultHistoryService.SaveAsync(history);
 
             response.Player = request.Player;
             response.Computer = (int)computerChoice;

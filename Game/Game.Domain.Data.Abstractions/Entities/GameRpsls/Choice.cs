@@ -3,7 +3,7 @@
 namespace Game.Domain.Data.Abstractions.Entities.GameRpsls
 {
     /// <summary>
-    /// Entity of type <see cref="Choice"/>
+    /// Entity class that describes options to chose in RPSLS game
     /// </summary>
     public class Choice : IEntity
     {

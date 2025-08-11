@@ -10,7 +10,7 @@ namespace GameAPI.Validations
         public PlayGameRequestValidator()
         {
             RuleFor(r => r.Player)
-                .Must(r => Enum.IsDefined(typeof(Choice), r));
+                .Must(r => Enum.IsDefined(typeof(GameRpslsChoice), r));
         }
     }
 }

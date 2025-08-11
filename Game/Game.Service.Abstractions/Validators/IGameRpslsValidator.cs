@@ -1,4 +1,5 @@
-﻿using Game.Domain.DTO.GameRpsls.InternalModels;
+﻿using Game.Domain.Data.Abstractions.Entities.GameRpsls;
+using Game.Domain.DTO.GameRpsls.InternalModels;
 using Game.Domain.DTO.GameRpsls.Requests;
 
 namespace Game.Service.Abstractions.Validators
@@ -19,5 +20,10 @@ namespace Game.Service.Abstractions.Validators
         /// </summary>
         /// <param name="request">DTO model Class <see cref="GameCalculationRequest"/> that should be validated</param>
         void ValidateGameCalculatorRequest(GameCalculationRequest request);
+        /// <summary>
+        /// Validates entity of type <see cref="GameResultHistory"/> before saving to db
+        /// </summary>
+        /// <param name="newRecord"></param>
+        void ValidateGameResultHistory(GameResultHistory newRecord);
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Game.Infrastructure.Utilities.Enums.Rpsls
 {
-    public enum Choice : int
+    public enum GameRpslsChoice : int
     {
         Rock = 1,
         Paper = 2,

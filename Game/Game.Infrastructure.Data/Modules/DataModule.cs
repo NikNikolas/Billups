@@ -31,6 +31,7 @@ namespace Game.Infrastructure.Data.Modules
         private static void RegisterRepository(ContainerBuilder builder)
         {
             builder.RegisterType<ChoiceRepository>().As<IChoiceRepository>();
+            builder.RegisterType<GameResultHistoryRepository>().As<IGameResultHistoryRepository>();
         }
     }
 }

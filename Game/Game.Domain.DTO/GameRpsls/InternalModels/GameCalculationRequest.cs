@@ -11,10 +11,10 @@ namespace Game.Domain.DTO.GameRpsls.InternalModels
         /// <summary>
         /// Game choice submitted by user
         /// </summary>
-        public Choice PlayerChoice { get; set; }
+        public GameRpslsChoice PlayerChoice { get; set; }
         /// <summary>
         /// Game choice randomly chosen by computer
         /// </summary>
-        public Choice ComputerChoice { get; set; }
+        public GameRpslsChoice ComputerChoice { get; set; }
     }
 }
