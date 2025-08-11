@@ -3,15 +3,15 @@
 namespace GameAPI.Controllers.Base
 {
     [Produces("application/json")]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
-    public abstract class BaseApiController<TContorller> : Controller where TContorller : Controller
+    public abstract class BaseApiController<TController> : Controller where TController : Controller
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseApiController{TContorller}" /> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
-        public BaseApiController(ILogger<TContorller> logger)
+        public BaseApiController(ILogger<TController> logger)
         {
             Logger = logger;
         }
@@ -22,6 +22,6 @@ namespace GameAPI.Controllers.Base
         /// <value>
         /// The logger.
         /// </value>
-        public ILogger<TContorller> Logger { get; }
+        public ILogger<TController> Logger { get; }
     }
 }

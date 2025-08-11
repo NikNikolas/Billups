@@ -17,7 +17,6 @@
 
   <ItemGroup>
     <Folder Include="DataContext\" />
-    <Folder Include="Repositories\" />
   </ItemGroup>
 
 </Project>

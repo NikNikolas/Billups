@@ -16,7 +16,7 @@ namespace GameAPI.Modules
     /// 
     /// </summary>
     /// <seealso cref="Autofac.Module" />
-    public class UsersMigrationModule : Module
+    public class GameModule : Module
     {
         /// <summary>
         /// Override to add registrations to the container.

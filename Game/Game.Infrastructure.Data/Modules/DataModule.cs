@@ -1,4 +1,6 @@
 ﻿using Autofac;
+using Game.Domain.Data.Abstractions.Repositories.GameRpsls;
+using Game.Infrastructure.Data.Repositories.GameRpsls;
 
 namespace Game.Infrastructure.Data.Modules
 {
@@ -28,6 +30,7 @@ namespace Game.Infrastructure.Data.Modules
         /// <param name="builder">The builder.</param>
         private static void RegisterRepository(ContainerBuilder builder)
         {
+            builder.RegisterType<ChoiceRepository>().As<IChoiceRepository>();
         }
     }
 }

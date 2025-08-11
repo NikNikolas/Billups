@@ -1,0 +1,28 @@
+﻿using Game.Domain.DTO.GameRpsls.Requests;
+using Game.Domain.DTO.GameRpsls.Responses;
+
+namespace Game.Service.Abstractions.GameRpsls
+{
+    /// <summary>
+    /// Interface for method definition related with RPSLS Game
+    /// </summary>
+    public interface IGameService
+    {
+        /// <summary>
+        /// Returns collection of DTO response classes of type <see cref="GetChoiceResponse"/> asynchronously
+        /// </summary>
+        /// <returns>IEnumerable of DTO class <see cref="GetChoiceResponse"/></returns>
+        Task<IEnumerable<GetChoiceResponse>> GetAllChoicesAsync();
+        /// <summary>
+        /// Returns DTO response class of type <see cref="GetChoiceResponse"/> asynchronously
+        /// </summary>
+        /// <returns>DTO class <see cref="GetChoiceResponse"/></returns>
+        Task<GetChoiceResponse> GetCustomChoiceAsync();
+        /// <summary>
+        /// Calculate result of submitted users choice with random computer choice and return game result asynchronously
+        /// </summary>
+        /// <param name="request">DTO class <see cref=""/></param>
+        /// <returns>DTO class <see cref="PlayGameRequest"/></returns>
+        Task<PlayGameResponse> PlayGameAsync(PlayGameRequest request);
+    }
+}

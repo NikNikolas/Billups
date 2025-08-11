@@ -39,6 +39,7 @@ namespace GameAPI
             services.AddCors();
 
             services.AddHttpClient();
+            //services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             var applicationContainer = services.AutofacBuilder(this.Configuration);
             return new AutofacServiceProvider(applicationContainer);

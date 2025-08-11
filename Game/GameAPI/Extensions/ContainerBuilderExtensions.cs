@@ -21,7 +21,7 @@ namespace GameAPI.Extensions
         {
             var builder = new ContainerBuilder();
             builder.Populate(services);
-            builder.RegisterModule<UsersMigrationModule>();
+            builder.RegisterModule<GameModule>();
             var configurationSection = configurations.GetSection(typeof(AppSettings).Name);
             var appSettings = configurationSection.Get<AppSettings>();
             builder.RegisterModule(new ServiceModule(appSettings, configurations));
