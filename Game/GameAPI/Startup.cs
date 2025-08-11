@@ -1,5 +1,8 @@
 ﻿using Autofac.Extensions.DependencyInjection;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using GameAPI.Extensions;
+using GameAPI.Validations.Base;
 
 namespace GameAPI
 {
@@ -39,7 +42,9 @@ namespace GameAPI
             services.AddCors();
 
             services.AddHttpClient();
-            //services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddFluentValidationAutoValidation();
+            services.AddValidatorsFromAssemblyContaining(typeof(ValidatorBase<>));
 
             var applicationContainer = services.AutofacBuilder(this.Configuration);
             return new AutofacServiceProvider(applicationContainer);

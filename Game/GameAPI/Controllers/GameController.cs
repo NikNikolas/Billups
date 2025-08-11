@@ -45,7 +45,6 @@ namespace GameAPI.Controllers
         public async Task<IActionResult> GetAllChoices()
         {
             _logger.LogInformation($"Started method GetAllChoice from controller {nameof(GameController)}");
-            //await _exampleService.IsServiceWorkingAsync();
 
             var response = await _gameService.GetAllChoicesAsync();
 
@@ -63,7 +62,6 @@ namespace GameAPI.Controllers
         public async Task<IActionResult> GetCustomChoice()
         {
             _logger.LogInformation($"Started method GetCustomChoice from controller {nameof(GameController)}");
-            //await _exampleService.IsServiceWorkingAsync();
 
             var response = await _gameService.GetCustomChoiceAsync();
 
@@ -81,8 +79,7 @@ namespace GameAPI.Controllers
         public async Task<IActionResult> PlayGame(PlayGameRequest request)
         {
             _logger.LogInformation($"Started method PlayGame from controller {nameof(GameController)}");
-            //await _exampleService.IsServiceWorkingAsync();
-
+            
             var response = await _gameService.PlayGameAsync(request);
 
             _logger.LogInformation($"Finished method PlayGame from controller {nameof(GameController)}");
