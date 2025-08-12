@@ -9,6 +9,8 @@ using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using Microsoft.AspNetCore.Mvc;
+using Game.Infrastructure.Utilities.Settings.HttpClientSettings.Base;
+using Microsoft.Extensions.Http;
 
 namespace GameAPI.Modules
 {
@@ -40,10 +42,6 @@ namespace GameAPI.Modules
                 return c.Resolve<IOptionsSnapshot<AppSettings>>().Value;
             }).As<IAppSettings>().SingleInstance();
 
-            builder.Register<ConnectionStrings>(c =>
-            {
-                return c.Resolve<IOptionsSnapshot<ConnectionStrings>>().Value;
-            }).As<IConnectionStrings>().SingleInstance();
 
             builder.Register<SwaggerUISettings>(c =>
                 {
@@ -54,6 +52,16 @@ namespace GameAPI.Modules
             { 
                 return c.Resolve<IOptionsSnapshot<SwaggerSettings>>().Value;
             }).As<ISwaggerSettings>().SingleInstance();
+
+            builder.Register<ExternalApiSettings>(c =>
+            {
+                return c.Resolve<IOptionsSnapshot<ExternalApiSettings>>().Value;
+            }).As<IExternalApiSettings>().SingleInstance();
+
+            builder.Register<ExternalApiUrls>(c =>
+            {
+                return c.Resolve<IOptionsSnapshot<ExternalApiUrls>>().Value;
+            }).As<IExternalApiUrls>().SingleInstance();
         }
 
         private static void RegisterConfiguration(ContainerBuilder builder)
@@ -63,6 +71,7 @@ namespace GameAPI.Modules
             builder.RegisterType<ConfigureSwaggerOptions>().As<IConfigureOptions<SwaggerOptions>>();
             builder.RegisterType<ConfigureApiBehaviorOptions>().As<IConfigureOptions<ApiBehaviorOptions>>().InstancePerDependency();
             builder.RegisterType<ConfigureCorsOptions>().As<IConfigureOptions<CorsOptions>>().InstancePerDependency();
+            builder.RegisterType<ConfigureNamedHttpClientOptions>().As<IConfigureOptions<HttpClientFactoryOptions>>().InstancePerDependency();
         }
     }
 }

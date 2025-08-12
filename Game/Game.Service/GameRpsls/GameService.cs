@@ -31,7 +31,9 @@ namespace Game.Service.GameRpsls
         /// Property for accessing implementation of interface <see cref="IGameCalculatorService"/>
         /// </summary>
         private readonly IGameCalculatorService _gameCalculatorService;
-
+        /// <summary>
+        /// Property for accessing implementation of interface <see cref="IGameResultHistoryService"/>
+        /// </summary>
         private readonly IGameResultHistoryService _gameResultHistoryService;
         /// <summary>
         /// Property for accessing implementation of interface <see cref="IMapper"/> for mapping object

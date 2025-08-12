@@ -14,14 +14,17 @@ namespace GameAPI.Extensions
             var apiSettings = configurations.GetSection(typeof(AppSettings).Name);
             services.Configure<AppSettings>(apiSettings).AddScoped<AppSettings>();
 
-            var connectionStringSettings = configurations.GetSection(typeof(ConnectionStrings).Name);
-            services.Configure<ConnectionStrings>(connectionStringSettings).AddScoped<ConnectionStrings>();
-
             var swaggerUISettings = configurations.GetSection(typeof(SwaggerUISettings).Name);
             services.Configure<SwaggerUISettings>(swaggerUISettings).AddScoped<SwaggerUISettings>();
 
             var swaggerSettings = configurations.GetSection(typeof(SwaggerSettings).Name);
             services.Configure<SwaggerSettings>(swaggerSettings).AddScoped<SwaggerSettings>();
+
+            var externalApiSettings = configurations.GetSection(typeof(ExternalApiSettings).Name);
+            services.Configure<ExternalApiSettings>(externalApiSettings).AddScoped<ExternalApiSettings>();
+
+            var externalApiUrls = configurations.GetSection(typeof(ExternalApiUrls).Name);
+            services.Configure<ExternalApiUrls>(externalApiUrls).AddScoped<ExternalApiUrls>();
         }
     }
 }
