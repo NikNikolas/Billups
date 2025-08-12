@@ -7,6 +7,7 @@ using Game.Service.Abstractions.Validators;
 using Game.Infrastructure.Utilities.Enums.Rpsls;
 using Game.Domain.DTO.GameRpsls.Requests;
 using Game.Domain.DTO.GameRpsls.Responses;
+using Game.Infrastructure.Utilities.ErrorHandling;
 
 namespace Game.Service.GameRpsls
 {
@@ -78,33 +79,50 @@ namespace Game.Service.GameRpsls
         /// Returns DTO response class of type <see cref="GetChoiceResponse"/> asynchronously
         /// </summary>
         /// <returns>DTO class <see cref="GetChoiceResponse"/></returns>
-        public async Task<GetChoiceResponse> GetCustomChoiceAsync()
+        public async Task<Result<GetChoiceResponse>> GetCustomChoiceAsync()
         {
-            GameRpslsChoice randomChoice = await _randomOptionGenerator.GenerateRandomOptionAsync();
+            var result = await _randomOptionGenerator.GenerateRandomOptionAsync();
+
+            if (result.IsFailure)
+            {
+                return Result.Failure<GetChoiceResponse>(result.Error);
+            }
+
+            GameRpslsChoice randomChoice = result.Value;
 
             var choice = await _choiceRepository.GetByIdAsync((int)randomChoice);
 
             var response = _mapper.Map<GetChoiceResponse>(choice);
 
-            return response;
+            return Result.Success(response);
         }
         /// <summary>
         /// Calculate result of submitted users choice with random computer choice and return game result asynchronously
         /// </summary>
         /// <param name="request">DTO class <see cref="PlayGameRequest"/></param>
         /// <returns>DTO class <see cref="PlayGameRequest"/></returns>
-        public async Task<PlayGameResponse> PlayGameAsync(PlayGameRequest request)
+        public async Task<Result<PlayGameResponse>> PlayGameAsync(PlayGameRequest request)
         {
             var response = new PlayGameResponse();
 
-            _gameRpslsValidator.ValidatePlayGameRequest(request);
+            var validationResult = _gameRpslsValidator.ValidatePlayGameRequest(request);
 
-            var computerChoice = await _randomOptionGenerator.GenerateRandomOptionAsync();
+            if (validationResult.IsFailure)
+            {
+                return Result.Failure<PlayGameResponse>(validationResult.Error);
+            }
+
+            var randomOpetionResult = await _randomOptionGenerator.GenerateRandomOptionAsync();
+
+            if (randomOpetionResult.IsFailure)
+            {
+                return Result.Failure<PlayGameResponse>(randomOpetionResult.Error);
+            }
 
             GameCalculationRequest calculationRequest = new GameCalculationRequest
             {
                 PlayerChoice = (GameRpslsChoice)request.Player,
-                ComputerChoice = computerChoice
+                ComputerChoice = randomOpetionResult.Value
             };
 
             var gameResult = _gameCalculatorService.Calculate(calculationRequest);
@@ -116,10 +134,10 @@ namespace Game.Service.GameRpsls
             await _gameResultHistoryService.SaveAsync(history);
 
             response.Player = request.Player;
-            response.Computer = (int)computerChoice;
+            response.Computer = (int)randomOpetionResult.Value;
             response.Results = GetNameOfGameResult(gameResult);
 
-            return response;
+            return Result.Success<PlayGameResponse>(response);
         }
 
         private string GetNameOfGameResult(GameResult result)

@@ -1,5 +1,6 @@
 ﻿using Game.Domain.DTO.GameRpsls.Requests;
 using Game.Domain.DTO.GameRpsls.Responses;
+using Game.Infrastructure.Utilities.ErrorHandling;
 
 namespace Game.Service.Abstractions.GameRpsls
 {
@@ -17,12 +18,12 @@ namespace Game.Service.Abstractions.GameRpsls
         /// Returns DTO response class of type <see cref="GetChoiceResponse"/> asynchronously
         /// </summary>
         /// <returns>DTO class <see cref="GetChoiceResponse"/></returns>
-        Task<GetChoiceResponse> GetCustomChoiceAsync();
+        Task<Result<GetChoiceResponse>> GetCustomChoiceAsync();
         /// <summary>
         /// Calculate result of submitted users choice with random computer choice and return game result asynchronously
         /// </summary>
         /// <param name="request">DTO class <see cref=""/></param>
         /// <returns>DTO class <see cref="PlayGameRequest"/></returns>
-        Task<PlayGameResponse> PlayGameAsync(PlayGameRequest request);
+        Task<Result<PlayGameResponse>> PlayGameAsync(PlayGameRequest request);
     }
 }

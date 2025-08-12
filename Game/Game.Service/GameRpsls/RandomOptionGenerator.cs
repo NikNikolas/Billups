@@ -1,8 +1,11 @@
 ﻿using System.Net.Http.Headers;
 using Game.Domain.DTO.GameRpsls.InternalModels;
 using Game.Infrastructure.Utilities.Enums.Rpsls;
+using Game.Infrastructure.Utilities.ErrorHandling;
+using Game.Infrastructure.Utilities.ErrorHandling.ConcreteErrors.GameRpsls;
 using Game.Infrastructure.Utilities.Settings;
 using Game.Service.Abstractions.GameRpsls;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Game.Service.GameRpsls
@@ -21,6 +24,10 @@ namespace Game.Service.GameRpsls
         /// </summary>
         private readonly IExternalApiUrls _externalApiUrls;
         /// <summary>
+        /// Logger
+        /// </summary>
+        private readonly ILogger<RandomOptionGenerator> _logger;
+        /// <summary>
         /// Named http client
         /// </summary>
         private const string HttpClientCodeChallenge = "CodeChallenge";
@@ -30,25 +37,28 @@ namespace Game.Service.GameRpsls
         /// </summary>
         /// <param name="factory"></param>
         /// <param name="externalApiUrls"></param>
+        /// <param name="logger"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public RandomOptionGenerator(IHttpClientFactory factory, IExternalApiUrls externalApiUrls)
+        public RandomOptionGenerator(IHttpClientFactory factory, IExternalApiUrls externalApiUrls, ILogger<RandomOptionGenerator> logger)
         {
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
             _externalApiUrls = externalApiUrls ?? throw new ArgumentNullException(nameof(externalApiUrls));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
         /// Return randomly chosen game option
         /// </summary>
         /// <returns>Enum value of <see cref="GameRpslsChoice"/></returns>
-        public async Task<GameRpslsChoice> GenerateRandomOptionAsync()
+        public async Task<Result<GameRpslsChoice>> GenerateRandomOptionAsync()
         {
             var relativeUrlPath = _externalApiUrls.UrlRandomNumberGenerator;
-
-            if (string.IsNullOrEmpty(relativeUrlPath))
-            {
-                throw new Exception("URL configuration for random number generator endpoint is not set in appSettings.json.");
-            }
+            
+            //TODO check settings while starting app
+            //if (string.IsNullOrEmpty(relativeUrlPath))
+            //{
+            //    throw new Exception("URL configuration for random number generator endpoint is not set in appSettings.json.");
+            //}
 
             double random = 0;
 
@@ -70,21 +80,27 @@ namespace Game.Service.GameRpsls
                 if (randomNumberExternal == null || randomNumberExternal.Random_number > 100 ||
                     randomNumberExternal.Random_number < 0)
                 {
-                    throw new Exception("Invalid response from external service for generating random number");
+                    var result = Result.Failure<GameRpslsChoice>(RandomNumberGeneratorErrors.RandomNumberInvalidValue());
+                    _logger.LogError(result.Error.Message);
+                    return result;
                 }
 
                 random = Math.Ceiling((double)randomNumberExternal.Random_number / 20);
             }
             catch (TaskCanceledException te)
             {
-                //TODO
+                var result = Result.Failure<GameRpslsChoice>(RandomNumberGeneratorErrors.RandomNumberServiceTimeout());
+                _logger.LogError(result.Error.Message);
+                return result;
             }
             catch (Exception e)
             {
-                //TODO
+                var result = Result.Failure<GameRpslsChoice>(RandomNumberGeneratorErrors.RandomNumberServiceError());
+                _logger.LogError($"{result.Error.Message}. Exception: {e.Message}");
+                return result;
             }
 
-            return (GameRpslsChoice)random;
+            return Result.Success((GameRpslsChoice)random);
         }
     }
 }

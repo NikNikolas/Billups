@@ -1,4 +1,5 @@
 ﻿using Game.Infrastructure.Utilities.Enums.Rpsls;
+using Game.Infrastructure.Utilities.ErrorHandling;
 
 namespace Game.Service.Abstractions.GameRpsls
 {
@@ -11,6 +12,6 @@ namespace Game.Service.Abstractions.GameRpsls
         /// Return randomly chosen game option
         /// </summary>
         /// <returns>Enum value of <see cref="GameRpslsChoice"/></returns>
-        Task<GameRpslsChoice> GenerateRandomOptionAsync();
+        Task<Result<GameRpslsChoice>> GenerateRandomOptionAsync();
     }
 }

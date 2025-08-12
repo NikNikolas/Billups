@@ -1,6 +1,7 @@
 ﻿using Game.Domain.Data.Abstractions.Entities.GameRpsls;
 using Game.Domain.DTO.GameRpsls.InternalModels;
 using Game.Domain.DTO.GameRpsls.Requests;
+using Game.Infrastructure.Utilities.ErrorHandling;
 
 namespace Game.Service.Abstractions.Validators
 {
@@ -14,7 +15,7 @@ namespace Game.Service.Abstractions.Validators
         /// </summary>
         /// <param name="request">DTO request Class <see cref="PlayGameRequest"/> that should be validated</param>
         /// <returns></returns>
-        void ValidatePlayGameRequest(PlayGameRequest request);
+        Result ValidatePlayGameRequest(PlayGameRequest request);
         /// <summary>
         /// Checks is request valid
         /// </summary>

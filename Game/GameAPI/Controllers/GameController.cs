@@ -63,11 +63,16 @@ namespace GameAPI.Controllers
         {
             _logger.LogInformation($"Started method GetCustomChoice from controller {nameof(GameController)}");
 
-            var response = await _gameService.GetCustomChoiceAsync();
+            var result = await _gameService.GetCustomChoiceAsync();
+
+            if (result.IsFailure)
+            {
+                return StatusCode(500);
+            }
 
             _logger.LogInformation($"Finished method GetCustomChoice from controller {nameof(GameController)}");
 
-            return Ok(response);
+            return Ok(result.Value);
         }
 
         /// <summary>
@@ -81,6 +86,14 @@ namespace GameAPI.Controllers
             _logger.LogInformation($"Started method PlayGame from controller {nameof(GameController)}");
             
             var response = await _gameService.PlayGameAsync(request);
+
+            if (response.IsFailure)
+            {
+                if (response.Error.Code.StartsWith("ValidationError"))
+                {
+                    return BadRequest(response.Error.Message);
+                }
+            }
 
             _logger.LogInformation($"Finished method PlayGame from controller {nameof(GameController)}");
 

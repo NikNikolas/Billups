@@ -2,6 +2,8 @@
 using Game.Domain.DTO.GameRpsls.InternalModels;
 using Game.Domain.DTO.GameRpsls.Requests;
 using Game.Infrastructure.Utilities.Enums.Rpsls;
+using Game.Infrastructure.Utilities.ErrorHandling;
+using Game.Infrastructure.Utilities.ErrorHandling.ConcreteErrors.GameRpsls;
 using Game.Service.Abstractions.Validators;
 
 namespace Game.Service.Validators
@@ -17,17 +19,19 @@ namespace Game.Service.Validators
         /// <param name="request"></param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public void ValidatePlayGameRequest(PlayGameRequest request)
+        public Result ValidatePlayGameRequest(PlayGameRequest request)
         {
             if (request == null)
             {
-                throw new ArgumentNullException(nameof(request));
+                return Result.Failure(PlayGameErrors.PlayGameNullRequest());
             }
 
             if (!Enum.IsDefined(typeof(GameRpslsChoice), request.Player))
             {
-                throw new ArgumentException($"Invalid value of parameter {nameof(request.Player)}.");
+                return Result.Failure(PlayGameErrors.PlayGameInvalidValueRequest());
             }
+
+            return Result.Success();
         }
 
         public void ValidateGameCalculatorRequest(GameCalculationRequest request)
