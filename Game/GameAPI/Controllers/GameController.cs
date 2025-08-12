@@ -2,6 +2,7 @@
 using Game.Domain.DTO.GameRpsls.Responses;
 using Game.Service.Abstractions.GameRpsls;
 using GameAPI.Controllers.Base;
+using GameAPI.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameAPI.Controllers
@@ -67,7 +68,7 @@ namespace GameAPI.Controllers
 
             if (result.IsFailure)
             {
-                return StatusCode(500);
+                return StatusCode(500, new InternalServerErrorProblem());
             }
 
             _logger.LogInformation($"Finished method GetCustomChoice from controller {nameof(GameController)}");
@@ -84,15 +85,17 @@ namespace GameAPI.Controllers
         public async Task<IActionResult> PlayGame(PlayGameRequest request)
         {
             _logger.LogInformation($"Started method PlayGame from controller {nameof(GameController)}");
-            
+
             var response = await _gameService.PlayGameAsync(request);
 
             if (response.IsFailure)
             {
-                if (response.Error.Code.StartsWith("ValidationError"))
+                if (response.Error.Code.StartsWith("ValidationError")) //TODO add type in error class and compare with it
                 {
                     return BadRequest(response.Error.Message);
                 }
+
+                return StatusCode(500, new InternalServerErrorProblem());
             }
 
             _logger.LogInformation($"Finished method PlayGame from controller {nameof(GameController)}");

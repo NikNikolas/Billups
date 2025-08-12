@@ -2,6 +2,7 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using GameAPI.Extensions;
+using GameAPI.Infrastructure;
 using GameAPI.Validations.Base;
 
 namespace GameAPI
@@ -46,6 +47,9 @@ namespace GameAPI
             services.AddFluentValidationAutoValidation();
             services.AddValidatorsFromAssemblyContaining(typeof(ValidatorBase<>));
 
+            services.AddExceptionHandler<GlobalExceptionHandler>();
+            services.AddProblemDetails();
+
             var applicationContainer = services.AutofacBuilder(this.Configuration);
             return new AutofacServiceProvider(applicationContainer);
         }
@@ -66,6 +70,8 @@ namespace GameAPI
 
             app.UseHttpsRedirection();
             app.UseRouting();
+
+            app.UseExceptionHandler();
 
             app.UseCors(x => x
                 .AllowAnyOrigin()
