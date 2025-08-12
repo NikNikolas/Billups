@@ -25,8 +25,6 @@ namespace Game.Service.GameRpsls
         /// </summary>
         private const string HttpClientCodeChallenge = "CodeChallenge";
 
-        private const string HeaderMediaTypeJson = "application/json"; //TODO move to appSettings.json
-
         /// <summary>
         /// Constructor
         /// </summary>
@@ -60,9 +58,7 @@ namespace Game.Service.GameRpsls
             {
                 using var client = _factory.CreateClient(HttpClientCodeChallenge);
                 {
-                    var content = new StringContent(String.Empty, new MediaTypeHeaderValue(HeaderMediaTypeJson));
-
-                    var response = await client.PostAsync(relativeUrlPath, content);
+                    var response = await client.GetAsync(relativeUrlPath);
                     response.EnsureSuccessStatusCode();
 
                     responseMessage = await response.Content.ReadAsStringAsync();
