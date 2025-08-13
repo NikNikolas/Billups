@@ -8,7 +8,7 @@ namespace Game.Service.GameRpsls
     /// <summary>
     /// Class for methods related with RPSLS game result calculation
     /// </summary>
-    internal class GameCalculatorService : IGameCalculatorService
+    public class GameCalculatorService : IGameCalculatorService
     {
         /// <summary>
         /// Property for accessing implementation of interface <see cref="IGameRpslsValidator"/>

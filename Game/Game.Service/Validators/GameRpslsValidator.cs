@@ -11,7 +11,7 @@ namespace Game.Service.Validators
     /// <summary>
     /// Class for validating GameRpsls data
     /// </summary>
-    internal class GameRpslsValidator : IGameRpslsValidator
+    public class GameRpslsValidator : IGameRpslsValidator
     {
         /// <summary>
         /// Validate is request different from null and is submitted player choice correct
