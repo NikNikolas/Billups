@@ -5,8 +5,14 @@
     /// </summary>
     public static class RandomNumberGeneratorErrors
     {
-        public static Error RandomNumberInvalidValue() => new Error("RandomNumberGenerator.InvalidValue", "Invalid value returned from third party service");
-        public static Error RandomNumberServiceTimeout() => new Error("RandomNumberGenerator.ServiceTimeout", "Timeout occurred in communication with third party service");
-        public static Error RandomNumberServiceError() => new Error("RandomNumberGenerator.ServiceError", "Error occurred in communication with third party service");
+        public const string CodeToManyRequests = "RandomNumberGenerator.ToManyRequests";
+        public const string CodeInvalidValue = "RandomNumberGenerator.InvalidValue";
+        public const string CodeServiceTimeout = "RandomNumberGenerator.ServiceTimeout";
+        public const string CodeServiceError = "RandomNumberGenerator.ServiceError";
+
+        public static Error RandomNumberInvalidValue() => new Error(CodeInvalidValue, "Invalid value returned from third party service");
+        public static Error RandomNumberServiceTimeout() => new Error(CodeServiceTimeout, "Timeout occurred in communication with third party service");
+        public static Error RandomNumberServiceError() => new Error(CodeServiceError, "Error occurred in communication with third party service");
+        public static Error RandomNumberToManyRequests() => new Error(CodeToManyRequests, "To many requests sent");
     }
 }

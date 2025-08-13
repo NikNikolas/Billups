@@ -1,5 +1,6 @@
 ﻿using Game.Domain.DTO.GameRpsls.Requests;
 using Game.Domain.DTO.GameRpsls.Responses;
+using Game.Infrastructure.Utilities.ErrorHandling.ConcreteErrors.GameRpsls;
 using Game.Service.Abstractions.GameRpsls;
 using GameAPI.Controllers.Base;
 using GameAPI.Infrastructure;
@@ -68,6 +69,11 @@ namespace GameAPI.Controllers
 
             if (result.IsFailure)
             {
+                if (result.Error.Code == RandomNumberGeneratorErrors.CodeToManyRequests)
+                {
+                    return StatusCode(429, new ToManyRequestsProblem());
+                }
+
                 return StatusCode(500, new InternalServerErrorProblem());
             }
 
@@ -90,9 +96,14 @@ namespace GameAPI.Controllers
 
             if (response.IsFailure)
             {
-                if (response.Error.Code.StartsWith("ValidationError")) //TODO add type in error class and compare with it
+                if (response.Error.Code == PlayGameErrors.CodeInvalidValueRequest) 
                 {
                     return BadRequest(response.Error.Message);
+                }
+
+                if (response.Error.Code == RandomNumberGeneratorErrors.CodeToManyRequests)
+                {
+                    return StatusCode(429, new ToManyRequestsProblem());
                 }
 
                 return StatusCode(500, new InternalServerErrorProblem());

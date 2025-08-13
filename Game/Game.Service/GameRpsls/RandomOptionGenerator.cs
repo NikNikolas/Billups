@@ -1,5 +1,4 @@
-﻿using System.Net.Http.Headers;
-using Game.Domain.DTO.GameRpsls.InternalModels;
+﻿using Game.Domain.DTO.GameRpsls.InternalModels;
 using Game.Infrastructure.Utilities.Enums.Rpsls;
 using Game.Infrastructure.Utilities.ErrorHandling;
 using Game.Infrastructure.Utilities.ErrorHandling.ConcreteErrors.GameRpsls;
@@ -7,6 +6,7 @@ using Game.Infrastructure.Utilities.Settings;
 using Game.Service.Abstractions.GameRpsls;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Polly.RateLimiting;
 
 namespace Game.Service.GameRpsls
 {
@@ -80,7 +80,8 @@ namespace Game.Service.GameRpsls
                 if (randomNumberExternal == null || randomNumberExternal.Random_number > 100 ||
                     randomNumberExternal.Random_number < 0)
                 {
-                    var result = Result.Failure<GameRpslsChoice>(RandomNumberGeneratorErrors.RandomNumberInvalidValue());
+                    var result =
+                        Result.Failure<GameRpslsChoice>(RandomNumberGeneratorErrors.RandomNumberInvalidValue());
                     _logger.LogError(result.Error.Message);
                     return result;
                 }
@@ -91,6 +92,12 @@ namespace Game.Service.GameRpsls
             {
                 var result = Result.Failure<GameRpslsChoice>(RandomNumberGeneratorErrors.RandomNumberServiceTimeout());
                 _logger.LogError(result.Error.Message);
+                return result;
+            }
+            catch (RateLimiterRejectedException rateLimiterException)
+            {
+                var result = Result.Failure<GameRpslsChoice>(RandomNumberGeneratorErrors.RandomNumberToManyRequests());
+                _logger.LogError($"{result.Error.Message}.");
                 return result;
             }
             catch (Exception e)

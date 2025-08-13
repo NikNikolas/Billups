@@ -42,7 +42,7 @@ namespace GameAPI
             services.AddSwaggerGen();
             services.AddCors();
 
-            services.AddHttpClient();
+            services.AddInternalMigrationHttpClient(Configuration);
 
             services.AddFluentValidationAutoValidation();
             services.AddValidatorsFromAssemblyContaining(typeof(ValidatorBase<>));

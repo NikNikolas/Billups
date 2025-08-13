@@ -10,7 +10,6 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using Microsoft.AspNetCore.Mvc;
 using Game.Infrastructure.Utilities.Settings.HttpClientSettings.Base;
-using Microsoft.Extensions.Http;
 
 namespace GameAPI.Modules
 {
@@ -71,7 +70,6 @@ namespace GameAPI.Modules
             builder.RegisterType<ConfigureSwaggerOptions>().As<IConfigureOptions<SwaggerOptions>>();
             builder.RegisterType<ConfigureApiBehaviorOptions>().As<IConfigureOptions<ApiBehaviorOptions>>().InstancePerDependency();
             builder.RegisterType<ConfigureCorsOptions>().As<IConfigureOptions<CorsOptions>>().InstancePerDependency();
-            builder.RegisterType<ConfigureNamedHttpClientOptions>().As<IConfigureOptions<HttpClientFactoryOptions>>().InstancePerDependency();
         }
     }
 }
