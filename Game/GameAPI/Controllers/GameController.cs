@@ -111,7 +111,7 @@ namespace GameAPI.Controllers
 
             _logger.LogInformation($"Finished method PlayGame from controller {nameof(GameController)}");
 
-            return Ok(response);
+            return Ok(response.Value);
         }
     }
 }

@@ -1,7 +1,10 @@
-﻿using Game.Service.Abstractions.GameRpsls;
+﻿using AutoMapper;
+using Game.Service.Abstractions.GameRpsls;
 using Game.Domain.Data.Abstractions.Entities.GameRpsls;
+using Game.Domain.Data.Abstractions.Model;
 using Game.Domain.Data.Abstractions.Repositories.GameRpsls;
 using Game.Service.Abstractions.Validators;
+using Game.Domain.DTO.GameRpsls.Requests;
 
 namespace Game.Service.GameRpsls
 {
@@ -12,17 +15,20 @@ namespace Game.Service.GameRpsls
     {
         private readonly IGameResultHistoryRepository _repository;
         private readonly IGameRpslsValidator _validator;
+        private readonly IMapper _mapper;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="repository">Implementation of interface <see cref="IGameResultHistoryRepository"/></param>
         /// <param name="validator">Implementation of interface <see cref="IGameRpslsValidator"/></param>
+        /// <param name="mapper"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public GameResultHistoryService(IGameResultHistoryRepository repository, IGameRpslsValidator validator)
+        public GameResultHistoryService(IGameResultHistoryRepository repository, IGameRpslsValidator validator, IMapper mapper)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         /// <summary>
@@ -35,6 +41,19 @@ namespace Game.Service.GameRpsls
             _validator.ValidateGameResultHistory(newRecord);
 
             await _repository.SaveAsync(newRecord);
+        }
+        /// <summary>
+        /// Return list of entities of type <see cref="GameResultHistory"/>
+        /// </summary>
+        /// <param name="filterRequest">Instance of model class <see cref="GetAllHistoryRequest"/> used for filtering</param>
+        /// <returns></returns>
+        public async Task<IEnumerable<GameResultHistory>> GetAllAsync(GetAllHistoryRequest filterRequest)
+        {
+            var request = _mapper.Map<GetAllHistoryModel>(filterRequest);
+
+            var histories = await _repository.GetAllAsync(request);
+
+            return histories;
         }
     }
 }

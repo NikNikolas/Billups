@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Game.Domain.Data.Abstractions.Entities.GameRpsls;
+using Game.Domain.Data.Abstractions.Model;
 using Game.Domain.DTO.GameRpsls.InternalModels;
+using Game.Domain.DTO.GameRpsls.Requests;
 using Game.Domain.DTO.GameRpsls.Responses;
 
 namespace Game.Service.Mapper
@@ -19,6 +21,7 @@ namespace Game.Service.Mapper
         {
             CreateMap<Choice, GetChoiceResponse>();
             CreateMap<GameCalculationRequest, GameResultHistory>();
+            CreateMap<GetAllHistoryRequest, GetAllHistoryModel>();
         }
     }
 }
