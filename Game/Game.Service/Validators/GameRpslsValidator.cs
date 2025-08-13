@@ -4,7 +4,9 @@ using Game.Domain.DTO.GameRpsls.Requests;
 using Game.Infrastructure.Utilities.Enums.Rpsls;
 using Game.Infrastructure.Utilities.ErrorHandling;
 using Game.Infrastructure.Utilities.ErrorHandling.ConcreteErrors.GameRpsls;
+using Game.Infrastructure.Utilities.Helpers;
 using Game.Service.Abstractions.Validators;
+using Microsoft.Extensions.Logging;
 
 namespace Game.Service.Validators
 {
@@ -13,6 +15,20 @@ namespace Game.Service.Validators
     /// </summary>
     public class GameRpslsValidator : IGameRpslsValidator
     {
+        /// <summary>
+        /// Logger  
+        /// </summary>
+        private readonly ILogger<GameRpslsValidator> _logger;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="logger"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public GameRpslsValidator(ILogger<GameRpslsValidator> logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
         /// <summary>
         /// Validate is request different from null and is submitted player choice correct
         /// </summary>
@@ -23,11 +39,13 @@ namespace Game.Service.Validators
         {
             if (request == null)
             {
+                _logger.LogError(LogMessageBuilder.GetNullValidationErrorMessage($"{nameof(PlayGameRequest)}"));
                 return Result.Failure(PlayGameErrors.PlayGameNullRequest());
             }
 
             if (!Enum.IsDefined(typeof(GameRpslsChoice), request.Player))
             {
+                _logger.LogError(LogMessageBuilder.GetValidationErrorMessage($"Value of {nameof(request.Player)} is out of range"));
                 return Result.Failure(PlayGameErrors.PlayGameInvalidValueRequest());
             }
 

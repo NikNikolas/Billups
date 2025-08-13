@@ -1,7 +1,9 @@
 ﻿using Game.Domain.DTO.GameRpsls.InternalModels;
 using Game.Infrastructure.Utilities.Enums.Rpsls;
+using Game.Infrastructure.Utilities.Helpers;
 using Game.Service.Abstractions.GameRpsls;
 using Game.Service.Abstractions.Validators;
+using Microsoft.Extensions.Logging;
 
 namespace Game.Service.GameRpsls
 {
@@ -14,15 +16,18 @@ namespace Game.Service.GameRpsls
         /// Property for accessing implementation of interface <see cref="IGameRpslsValidator"/>
         /// </summary>
         private readonly IGameRpslsValidator _gameValidator;
+        private readonly ILogger<GameCalculatorService> _logger;
 
         /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="gameValidator">Implementation of interface <see cref="IGameRpslsValidator"/></param>
+        /// <param name="logger">Logger</param>
         /// <exception cref="ArgumentNullException"></exception>
-        public GameCalculatorService(IGameRpslsValidator gameValidator)
+        public GameCalculatorService(IGameRpslsValidator gameValidator, ILogger<GameCalculatorService> logger)
         {
             _gameValidator = gameValidator ?? throw new ArgumentNullException(nameof(gameValidator));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -44,11 +49,15 @@ namespace Game.Service.GameRpsls
         /// <returns>Enum value of <see cref="GameResult"/></returns>
         public GameResult Calculate(GameCalculationRequest request)
         {
+            _logger.LogInformation(LogMessageBuilder.GetStartedMethodMessage(
+                $"{nameof(request.PlayerChoice)}:{request.PlayerChoice} and {nameof(request.ComputerChoice)}:{request.ComputerChoice}"));
+
             _gameValidator.ValidateGameCalculatorRequest(request);
 
             //If both player and computer chose the same option the game result will be 'Tie'
             if (request.PlayerChoice == request.ComputerChoice)
             {
+                _logger.LogInformation(LogMessageBuilder.GetFinishedMethodMessage($"{nameof(GameResult)}:{GameResult.Tie}"));
                 return GameResult.Tie;
             }
 
@@ -62,9 +71,11 @@ namespace Game.Service.GameRpsls
 
             if (isInDominatesList)
             {
+                _logger.LogInformation(LogMessageBuilder.GetFinishedMethodMessage($"{nameof(GameResult)}:{GameResult.Win}"));
                 return GameResult.Win;
             }
-            
+
+            _logger.LogInformation(LogMessageBuilder.GetFinishedMethodMessage($"{nameof(GameResult)}:{GameResult.Lose}"));
             return GameResult.Lose;
         }
     }

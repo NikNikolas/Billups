@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using Game.Infrastructure.Utilities.Helpers;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace GameAPI.Infrastructure
 {
@@ -17,7 +18,7 @@ namespace GameAPI.Infrastructure
 
         public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
         {
-            _logger.LogError(exception, $"Exception occurred: {exception.Message}");
+            _logger.LogError(exception, LogMessageBuilder.GetNotHandledExceptionMessage(exception));
 
             var problemDetails = new InternalServerErrorProblem();
 

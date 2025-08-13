@@ -2,6 +2,7 @@
 using Game.Infrastructure.Utilities.Enums.Rpsls;
 using Game.Service.GameRpsls;
 using Game.Service.Validators;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace Game.Service.Test
@@ -37,9 +38,11 @@ namespace Game.Service.Test
         public void CalculateResult_ShouldReturnCorrectResult(GameRpslsChoice playerChoice, GameRpslsChoice computerChoice, GameResult expectedResult)
         {
             //Arrange
-            var validationServiceMock = new Mock<GameRpslsValidator>();
+            var loggerMock = new Mock<ILogger<GameCalculatorService>>();
+            var loggerValidatorMock = new Mock<ILogger<GameRpslsValidator>>();
+            var validationServiceMock = new Mock<GameRpslsValidator>(loggerValidatorMock.Object);
 
-            GameCalculatorService service = new GameCalculatorService(validationServiceMock.Object);
+            GameCalculatorService service = new GameCalculatorService(validationServiceMock.Object, loggerMock.Object);
             var request = new GameCalculationRequest()
             {
                 ComputerChoice = computerChoice,

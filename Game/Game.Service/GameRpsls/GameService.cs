@@ -8,6 +8,8 @@ using Game.Infrastructure.Utilities.Enums.Rpsls;
 using Game.Domain.DTO.GameRpsls.Requests;
 using Game.Domain.DTO.GameRpsls.Responses;
 using Game.Infrastructure.Utilities.ErrorHandling;
+using Microsoft.Extensions.Logging;
+using Game.Infrastructure.Utilities.Helpers;
 
 namespace Game.Service.GameRpsls
 {
@@ -40,6 +42,10 @@ namespace Game.Service.GameRpsls
         /// Property for accessing implementation of interface <see cref="IMapper"/> for mapping object
         /// </summary>
         private readonly IMapper _mapper;
+        /// <summary>
+        /// Logger
+        /// </summary>
+        private readonly ILogger<GameService> _logger;
 
         /// <summary>
         /// Create an instance of class <see cref="GameService"/>.
@@ -50,9 +56,10 @@ namespace Game.Service.GameRpsls
         /// <param name="gameCalculatorService">Implementation of interface <see cref="IGameCalculatorService"/></param>
         /// <param name="gameResultHistoryService">Implementation of interface <see cref="IGameResultHistoryService"/></param>
         /// <param name="mapper">Implementation of interface <see cref="IMapper"/></param>
+        /// <param name="logger">Implementation of Logger</param>
         /// <exception cref="ArgumentNullException"></exception>
         public GameService(IChoiceRepository choiceRepository, IRandomOptionGenerator randomOptionGenerator, IGameRpslsValidator gameRpslsValidator,
-            IGameCalculatorService gameCalculatorService, IGameResultHistoryService gameResultHistoryService, IMapper mapper)
+            IGameCalculatorService gameCalculatorService, IGameResultHistoryService gameResultHistoryService, IMapper mapper, ILogger<GameService> logger)
         {
             _choiceRepository = choiceRepository ?? throw new ArgumentNullException(nameof(choiceRepository));
             _randomOptionGenerator = randomOptionGenerator ?? throw new ArgumentNullException(nameof(randomOptionGenerator));
@@ -60,6 +67,7 @@ namespace Game.Service.GameRpsls
             _gameCalculatorService = gameCalculatorService ?? throw new ArgumentNullException(nameof(gameCalculatorService));
             _gameResultHistoryService = gameResultHistoryService ?? throw new ArgumentNullException(nameof(gameResultHistoryService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -68,9 +76,13 @@ namespace Game.Service.GameRpsls
         /// <returns>IEnumerable of class <see cref="GetChoiceResponse"/></returns>
         public async Task<IEnumerable<GetChoiceResponse>> GetAllChoicesAsync()
         {
+            _logger.LogInformation(LogMessageBuilder.GetStartedMethodMessage());
+
             var choices = await _choiceRepository.GetAllAsync();
 
             var choicesResponses = _mapper.Map<IEnumerable<GetChoiceResponse>>(choices);
+
+            _logger.LogInformation(LogMessageBuilder.GetFinishedMethodMessage());
 
             return choicesResponses;
         }
@@ -81,6 +93,8 @@ namespace Game.Service.GameRpsls
         /// <returns>DTO class <see cref="GetChoiceResponse"/></returns>
         public async Task<Result<GetChoiceResponse>> GetCustomChoiceAsync()
         {
+            _logger.LogInformation(LogMessageBuilder.GetStartedMethodMessage());
+
             var result = await _randomOptionGenerator.GenerateRandomOptionAsync();
 
             if (result.IsFailure)
@@ -94,6 +108,8 @@ namespace Game.Service.GameRpsls
 
             var response = _mapper.Map<GetChoiceResponse>(choice);
 
+            _logger.LogInformation(LogMessageBuilder.GetFinishedMethodMessage());
+
             return Result.Success(response);
         }
         /// <summary>
@@ -103,6 +119,8 @@ namespace Game.Service.GameRpsls
         /// <returns>DTO class <see cref="PlayGameRequest"/></returns>
         public async Task<Result<PlayGameResponse>> PlayGameAsync(PlayGameRequest request)
         {
+            _logger.LogInformation(LogMessageBuilder.GetStartedMethodMessage());
+
             var response = new PlayGameResponse();
 
             var validationResult = _gameRpslsValidator.ValidatePlayGameRequest(request);
@@ -136,6 +154,8 @@ namespace Game.Service.GameRpsls
             response.Player = request.Player;
             response.Computer = (int)randomOpetionResult.Value;
             response.Results = GetNameOfGameResult(gameResult);
+
+            _logger.LogInformation(LogMessageBuilder.GetFinishedMethodMessage());
 
             return Result.Success<PlayGameResponse>(response);
         }

@@ -1,10 +1,12 @@
 ﻿using Game.Domain.DTO.GameRpsls.Requests;
 using Game.Domain.DTO.GameRpsls.Responses;
 using Game.Infrastructure.Utilities.ErrorHandling.ConcreteErrors.GameRpsls;
+using Game.Infrastructure.Utilities.Helpers;
 using Game.Service.Abstractions.GameRpsls;
 using GameAPI.Controllers.Base;
 using GameAPI.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace GameAPI.Controllers
 {
@@ -17,18 +19,17 @@ namespace GameAPI.Controllers
     {
 
         /// <summary>
-        /// 
+        /// Property to implementation of interface <see cref="IGameService"/>
         /// </summary>
         private readonly IGameService _gameService;
         /// <summary>
-        /// Logger
+        /// 
         /// </summary>
         private readonly ILogger<GameController> _logger;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="GameController"/> class.
         /// </summary>
-        /// <param name="gameService"></param>
+        /// <param name="gameService">Implementation of interface <see cref="IGameService"/></param>
         /// <param name="logger">Instance of logger</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <remarks>For use when creating a <see cref="GameController"/> by DI</remarks>
@@ -46,11 +47,7 @@ namespace GameAPI.Controllers
         [HttpGet("choices")]
         public async Task<IActionResult> GetAllChoices()
         {
-            _logger.LogInformation($"Started method GetAllChoice from controller {nameof(GameController)}");
-
             var response = await _gameService.GetAllChoicesAsync();
-
-            _logger.LogInformation($"Finished method GetAllChoice from controller {nameof(GameController)}");
 
             return Ok(response);
         }
@@ -63,21 +60,18 @@ namespace GameAPI.Controllers
         [HttpGet("choice")]
         public async Task<IActionResult> GetCustomChoice()
         {
-            _logger.LogInformation($"Started method GetCustomChoice from controller {nameof(GameController)}");
-
             var result = await _gameService.GetCustomChoiceAsync();
 
             if (result.IsFailure)
             {
                 if (result.Error.Code == RandomNumberGeneratorErrors.CodeToManyRequests)
                 {
+                    _logger.LogWarning(LogMessageBuilder.GetNotOkStatusCodeMessage(429));
                     return StatusCode(429, new ToManyRequestsProblem());
                 }
-
+                _logger.LogWarning(LogMessageBuilder.GetNotOkStatusCodeMessage(500));
                 return StatusCode(500, new InternalServerErrorProblem());
             }
-
-            _logger.LogInformation($"Finished method GetCustomChoice from controller {nameof(GameController)}");
 
             return Ok(result.Value);
         }
@@ -90,26 +84,24 @@ namespace GameAPI.Controllers
         [HttpPost("play")]
         public async Task<IActionResult> PlayGame(PlayGameRequest request)
         {
-            _logger.LogInformation($"Started method PlayGame from controller {nameof(GameController)}");
-
             var response = await _gameService.PlayGameAsync(request);
 
             if (response.IsFailure)
             {
                 if (response.Error.Code == PlayGameErrors.CodeInvalidValueRequest) 
                 {
+                    _logger.LogWarning(LogMessageBuilder.GetNotOkStatusCodeMessage(400));
                     return BadRequest(response.Error.Message);
                 }
 
                 if (response.Error.Code == RandomNumberGeneratorErrors.CodeToManyRequests)
                 {
+                    _logger.LogWarning(LogMessageBuilder.GetNotOkStatusCodeMessage(429));
                     return StatusCode(429, new ToManyRequestsProblem());
                 }
-
+                _logger.LogWarning(LogMessageBuilder.GetNotOkStatusCodeMessage(500));
                 return StatusCode(500, new InternalServerErrorProblem());
             }
-
-            _logger.LogInformation($"Finished method PlayGame from controller {nameof(GameController)}");
 
             return Ok(response.Value);
         }

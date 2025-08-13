@@ -2,6 +2,7 @@
 using Game.Infrastructure.Utilities.Enums.Rpsls;
 using Game.Infrastructure.Utilities.ErrorHandling;
 using Game.Infrastructure.Utilities.ErrorHandling.ConcreteErrors.GameRpsls;
+using Game.Infrastructure.Utilities.Helpers;
 using Game.Infrastructure.Utilities.Settings;
 using Game.Service.Abstractions.GameRpsls;
 using Microsoft.Extensions.Logging;
@@ -52,6 +53,8 @@ namespace Game.Service.GameRpsls
         /// <returns>Enum value of <see cref="GameRpslsChoice"/></returns>
         public async Task<Result<GameRpslsChoice>> GenerateRandomOptionAsync()
         {
+            _logger.LogInformation(LogMessageBuilder.GetStartedMethodMessage());
+
             var relativeUrlPath = _externalApiUrls.UrlRandomNumberGenerator;
             
             //TODO check settings while starting app
@@ -74,6 +77,7 @@ namespace Game.Service.GameRpsls
                     responseMessage = await response.Content.ReadAsStringAsync();
                     responseStatusCode = (int)response.StatusCode;
                 }
+                _logger.LogInformation(LogMessageBuilder.GetHttpRequestSucceededMessage(responseStatusCode,responseMessage));
 
                 var randomNumberExternal = JsonConvert.DeserializeObject<RandomNumberResponse>(responseMessage);
 
@@ -82,7 +86,7 @@ namespace Game.Service.GameRpsls
                 {
                     var result =
                         Result.Failure<GameRpslsChoice>(RandomNumberGeneratorErrors.RandomNumberInvalidValue());
-                    _logger.LogError(result.Error.Message);
+                    _logger.LogError(LogMessageBuilder.GetErrorMessage(result.Error.Message));
                     return result;
                 }
 
@@ -97,15 +101,17 @@ namespace Game.Service.GameRpsls
             catch (RateLimiterRejectedException rateLimiterException)
             {
                 var result = Result.Failure<GameRpslsChoice>(RandomNumberGeneratorErrors.RandomNumberToManyRequests());
-                _logger.LogError($"{result.Error.Message}.");
+                _logger.LogError(LogMessageBuilder.GetErrorMessage(result.Error.Message));
                 return result;
             }
             catch (Exception e)
             {
                 var result = Result.Failure<GameRpslsChoice>(RandomNumberGeneratorErrors.RandomNumberServiceError());
-                _logger.LogError($"{result.Error.Message}. Exception: {e.Message}");
+                _logger.LogError(LogMessageBuilder.GetErrorMessage($"{result.Error.Message}. Exception: {e.Message}"));
                 return result;
             }
+
+            _logger.LogInformation(LogMessageBuilder.GetFinishedMethodMessage());
 
             return Result.Success((GameRpslsChoice)random);
         }
