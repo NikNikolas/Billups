@@ -1,5 +1,6 @@
 ﻿using Game.Domain.DTO.GameRpsls.Requests;
 using Game.Domain.DTO.GameRpsls.Responses;
+using Game.Infrastructure.Utilities.Helpers;
 using Game.Service.Abstractions.GameRpsls;
 using GameAPI.Controllers.Base;
 using Microsoft.AspNetCore.Mvc;
@@ -43,11 +44,11 @@ namespace GameAPI.Controllers
         [HttpGet("")]
         public async Task<IActionResult> GetAll([FromQuery] GetAllHistoryRequest request)
         {
-            _logger.LogInformation($"Started method GetAll from controller {nameof(GameResultHistoryController)}");
+            _logger.LogInformation(LogMessageBuilder.GetStartedMethodMessage());
 
             var response = await _gameResultHistoryService.GetAllAsync(request);
 
-            _logger.LogInformation($"Finished method GetAll from controller {nameof(GameResultHistoryController)}");
+            _logger.LogInformation(LogMessageBuilder.GetFinishedMethodMessage());
 
             return Ok(response);
         }

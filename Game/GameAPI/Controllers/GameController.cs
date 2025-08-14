@@ -6,7 +6,6 @@ using Game.Service.Abstractions.GameRpsls;
 using GameAPI.Controllers.Base;
 using GameAPI.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace GameAPI.Controllers
 {
@@ -47,8 +46,11 @@ namespace GameAPI.Controllers
         [HttpGet("choices")]
         public async Task<IActionResult> GetAllChoices()
         {
+            _logger.LogInformation(LogMessageBuilder.GetStartedMethodMessage());
+
             var response = await _gameService.GetAllChoicesAsync();
 
+            _logger.LogInformation(LogMessageBuilder.GetFinishedMethodMessage());
             return Ok(response);
         }
 
@@ -60,6 +62,8 @@ namespace GameAPI.Controllers
         [HttpGet("choice")]
         public async Task<IActionResult> GetCustomChoice()
         {
+            _logger.LogInformation(LogMessageBuilder.GetStartedMethodMessage());
+
             var result = await _gameService.GetCustomChoiceAsync();
 
             if (result.IsFailure)
@@ -72,6 +76,7 @@ namespace GameAPI.Controllers
                 _logger.LogWarning(LogMessageBuilder.GetNotOkStatusCodeMessage(500));
                 return StatusCode(500, new InternalServerErrorProblem());
             }
+            _logger.LogInformation(LogMessageBuilder.GetFinishedMethodMessage());
 
             return Ok(result.Value);
         }
@@ -84,6 +89,8 @@ namespace GameAPI.Controllers
         [HttpPost("play")]
         public async Task<IActionResult> PlayGame(PlayGameRequest request)
         {
+            _logger.LogInformation(LogMessageBuilder.GetStartedMethodMessage());
+
             var response = await _gameService.PlayGameAsync(request);
 
             if (response.IsFailure)
@@ -102,7 +109,7 @@ namespace GameAPI.Controllers
                 _logger.LogWarning(LogMessageBuilder.GetNotOkStatusCodeMessage(500));
                 return StatusCode(500, new InternalServerErrorProblem());
             }
-
+            _logger.LogInformation(LogMessageBuilder.GetFinishedMethodMessage());
             return Ok(response.Value);
         }
     }
