@@ -16,7 +16,7 @@ namespace GameAPI.Controllers
     {
 
         /// <summary>
-        /// 
+        /// Property to implementation of interface <see cref="IGameResultHistoryService"/>
         /// </summary>
         private readonly IGameResultHistoryService _gameResultHistoryService;
         /// <summary>
@@ -27,8 +27,8 @@ namespace GameAPI.Controllers
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="gameResultHistoryService"></param>
-        /// <param name="logger"></param>
+        /// <param name="gameResultHistoryService">Implementation of interface <see cref="IGameResultHistoryService"/></param>
+        /// <param name="logger">Implementation of Logger</param>
         /// <exception cref="ArgumentNullException"></exception>
         public GameResultHistoryController(IGameResultHistoryService gameResultHistoryService, ILogger<GameResultHistoryController> logger) : base(logger)
         {
@@ -37,7 +37,7 @@ namespace GameAPI.Controllers
         }
 
         /// <summary>
-        /// Returns collection of DTO classes <see cref="GetChoiceResponse"/>
+        /// Returns collection of history records of played games 
         /// </summary>
         /// <returns>Returns <see cref="IActionResult"/></returns>
         [ProducesResponseType(StatusCodes.Status200OK)]

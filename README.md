@@ -55,8 +55,8 @@
 	
 ### Database
 
-- There is no concrete implementation of database
-- All data are stored in LocalDb.cs of project Infrastructure.Data. That is in memory data with initialy populated codebooks
+- There is only in memory storing data (approved by HR)
+- InMemory Data storage is performed via https://www.nuget.org/packages/Microsoft.EntityFrameworkCore.InMemory/
 
 ### Logger
 

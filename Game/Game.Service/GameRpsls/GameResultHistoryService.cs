@@ -44,10 +44,10 @@ namespace Game.Service.GameRpsls
             await _repository.SaveAsync(newRecord);
         }
         /// <summary>
-        /// Return list of entities of type <see cref="GameResultHistory"/>
+        /// Return collection of played game results
         /// </summary>
         /// <param name="filterRequest">Instance of model class <see cref="GetAllHistoryRequest"/> used for filtering</param>
-        /// <returns></returns>
+        /// <returns>IEnumerable of <see cref="GetGameResultHistoryResponse"/></returns>
         public async Task<IEnumerable<GetGameResultHistoryResponse>> GetAllAsync(GetAllHistoryRequest filterRequest)
         {
             var request = _mapper.Map<GetAllHistoryModel>(filterRequest);

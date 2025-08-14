@@ -1,5 +1,4 @@
 ﻿using Game.Domain.DTO.GameRpsls.Requests;
-using Game.Domain.DTO.GameRpsls.Responses;
 using Game.Infrastructure.Utilities.ErrorHandling.ConcreteErrors.GameRpsls;
 using Game.Infrastructure.Utilities.Helpers;
 using Game.Service.Abstractions.GameRpsls;
@@ -22,14 +21,14 @@ namespace GameAPI.Controllers
         /// </summary>
         private readonly IGameService _gameService;
         /// <summary>
-        /// 
+        /// Logger
         /// </summary>
         private readonly ILogger<GameController> _logger;
         /// <summary>
         /// Initializes a new instance of the <see cref="GameController"/> class.
         /// </summary>
         /// <param name="gameService">Implementation of interface <see cref="IGameService"/></param>
-        /// <param name="logger">Instance of logger</param>
+        /// <param name="logger">Implementation of logger</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <remarks>For use when creating a <see cref="GameController"/> by DI</remarks>
         public GameController(IGameService gameService, ILogger<GameController> logger) : base(logger)
@@ -39,7 +38,7 @@ namespace GameAPI.Controllers
         }
 
         /// <summary>
-        /// Returns collection of DTO classes <see cref="GetChoiceResponse"/>
+        /// Returns collection of all Game Choices
         /// </summary>
         /// <returns>Returns <see cref="IActionResult"/></returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -55,7 +54,7 @@ namespace GameAPI.Controllers
         }
 
         /// <summary>
-        /// Returns one instance of DTO class <see cref="GetChoiceResponse"/>
+        /// Returns one randomly chosen Game Choice
         /// </summary>
         /// <returns>Returns <see cref="IActionResult"/></returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -65,7 +64,7 @@ namespace GameAPI.Controllers
             _logger.LogInformation(LogMessageBuilder.GetStartedMethodMessage());
 
             var result = await _gameService.GetCustomChoiceAsync();
-
+            //TODO refactor
             if (result.IsFailure)
             {
                 if (result.Error.Code == RandomNumberGeneratorErrors.CodeToManyRequests)
@@ -82,7 +81,7 @@ namespace GameAPI.Controllers
         }
 
         /// <summary>
-        /// Returns one instance of DTO class <see cref="GetChoiceResponse"/>
+        /// Play new game and Returns result of played game
         /// </summary>
         /// <returns>Returns <see cref="IActionResult"/></returns>
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -92,7 +91,7 @@ namespace GameAPI.Controllers
             _logger.LogInformation(LogMessageBuilder.GetStartedMethodMessage());
 
             var response = await _gameService.PlayGameAsync(request);
-
+            //TODO refactor
             if (response.IsFailure)
             {
                 if (response.Error.Code == PlayGameErrors.CodeInvalidValueRequest) 

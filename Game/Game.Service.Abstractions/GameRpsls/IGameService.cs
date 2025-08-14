@@ -10,19 +10,19 @@ namespace Game.Service.Abstractions.GameRpsls
     public interface IGameService
     {
         /// <summary>
-        /// Returns collection of DTO response classes of type <see cref="GetChoiceResponse"/> asynchronously
+        /// Returns collection of Choices asynchronously
         /// </summary>
         /// <returns>IEnumerable of DTO class <see cref="GetChoiceResponse"/></returns>
         Task<IEnumerable<GetChoiceResponse>> GetAllChoicesAsync();
         /// <summary>
-        /// Returns DTO response class of type <see cref="GetChoiceResponse"/> asynchronously
+        /// Returns randomly chosen Choice asynchronously
         /// </summary>
         /// <returns>DTO class <see cref="GetChoiceResponse"/></returns>
         Task<Result<GetChoiceResponse>> GetCustomChoiceAsync();
         /// <summary>
         /// Calculate result of submitted users choice with random computer choice and return game result asynchronously
         /// </summary>
-        /// <param name="request">DTO class <see cref=""/></param>
+        /// <param name="request">DTO class <see cref="PlayGameRequest"/></param>
         /// <returns>DTO class <see cref="PlayGameRequest"/></returns>
         Task<Result<PlayGameResponse>> PlayGameAsync(PlayGameRequest request);
     }
