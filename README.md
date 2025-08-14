@@ -64,3 +64,8 @@
 - All loggin configuration is in nlog.config file
 	- directory where log files will be created
 	- log level configuraton
+	
+### Note
+
+- All routes are configured with controller in name. For example: '/api/game/choice'
+- In case that route must be without controller, line '[Route("api/[controller]")]' from BaseApiController.cs should be deleted
