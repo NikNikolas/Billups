@@ -47,7 +47,7 @@
 
 ### Dependency injection
 
-- Dependency injection is performed via Autofac.
+- Dependency injection is performed via Autofac: https://autofac.org/
 - Every layer has it's own Module class used for registration of components
 - In abstraction layers (services and repository) there is configuration for reading their implementation layers.
 	Reading those dll files is also perfomed in Module classes, while location for those dll implementation is configured
@@ -60,7 +60,7 @@
 
 ### Logger
 
-- Logging is performed via nLog nuget
+- Logging is performed via nLog nuget: https://nlog-project.org/
 - All loggin configuration is in nlog.config file
 	- directory where log files will be created
 	- log level configuraton
