@@ -8,15 +8,12 @@
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="8.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.19" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Game.Domain.Data.Abstractions\Game.Domain.Data.Abstractions.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="DataContext\" />
   </ItemGroup>
 
 </Project>

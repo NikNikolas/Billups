@@ -5,7 +5,7 @@
     /// </summary>
     public enum GameResult : byte
     {
-        Tie = 0,
+        Tie = 3,
         Win = 1,
         Lose = 2
     }

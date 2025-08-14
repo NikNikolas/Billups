@@ -1,23 +1,20 @@
 ﻿using Game.Domain.Data.Abstractions.Entities.GameRpsls;
+using Microsoft.EntityFrameworkCore;
 
 namespace Game.Infrastructure.Data.MoqLocalDb
 {
-    /// <summary>
-    /// Mock class simulates local Db instance. Initially populated with data
-    /// </summary>
-    internal class LocalDb
+    public class DbInitializer
     {
-        public static LocalDb Current { get; } = new LocalDb();
+        private readonly ModelBuilder modelBuilder;
 
-        public IEnumerable<Choice> Choices { get; set; }
-        public List<GameResultHistory> GameResultHistories { get; set; }
-
-        public LocalDb()
+        public DbInitializer(ModelBuilder modelBuilder)
         {
-            GameResultHistories = new List<GameResultHistory>();
+            this.modelBuilder = modelBuilder;
+        }
 
-            Choices = new List<Choice>()
-            {
+        public void Seed()
+        {
+            modelBuilder.Entity<Choice>().HasData(
                 new Choice
                 {
                     Id = 1,
@@ -43,7 +40,7 @@ namespace Game.Infrastructure.Data.MoqLocalDb
                     Id = 5,
                     Name = "Spock"
                 }
-            };
+            );
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Game.Domain.Data.Abstractions.Entities.Base;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Game.Domain.Data.Abstractions.Entities.Base;
 using Game.Infrastructure.Utilities.Enums.Rpsls;
 
 namespace Game.Domain.Data.Abstractions.Entities.GameRpsls
@@ -8,6 +9,11 @@ namespace Game.Domain.Data.Abstractions.Entities.GameRpsls
     /// </summary>
     public class GameResultHistory : IEntity
     {
+        /// <summary>
+        /// Primary Key
+        /// </summary>
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
         /// <summary>
         /// Game option chosen by user
         /// </summary>

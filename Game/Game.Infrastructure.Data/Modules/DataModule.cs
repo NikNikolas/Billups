@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using Game.Domain.Data.Abstractions.Repositories.GameRpsls;
+using Game.Infrastructure.Data.DataContext;
 using Game.Infrastructure.Data.Repositories.GameRpsls;
+using Microsoft.EntityFrameworkCore;
 
 namespace Game.Infrastructure.Data.Modules
 {
@@ -22,6 +24,7 @@ namespace Game.Infrastructure.Data.Modules
         {
             base.Load(builder);
             RegisterRepository(builder);
+            RegisterInMemoryEFDatabase(builder);
         }
 
         /// <summary>
@@ -32,6 +35,24 @@ namespace Game.Infrastructure.Data.Modules
         {
             builder.RegisterType<ChoiceRepository>().As<IChoiceRepository>();
             builder.RegisterType<GameResultHistoryRepository>().As<IGameResultHistoryRepository>();
+        }
+
+        /// <summary>
+        /// Registers entity framework inMemory database
+        /// </summary>
+        /// <param name="builder">The builder.</param>
+        private static void RegisterInMemoryEFDatabase(ContainerBuilder builder)
+        {
+            builder.Register(c =>
+            {
+                var opt = new DbContextOptionsBuilder<AppDbContext>();
+                opt.UseInMemoryDatabase("LocalDb");
+
+                var dbContext = new AppDbContext(opt.Options);
+
+                dbContext.Database.EnsureCreated();
+                return dbContext;
+            }).AsSelf().InstancePerLifetimeScope();
         }
     }
 }

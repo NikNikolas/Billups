@@ -1,6 +1,7 @@
 ﻿using Game.Domain.Data.Abstractions.Entities.GameRpsls;
 using Game.Domain.Data.Abstractions.Repositories.GameRpsls;
-using Game.Infrastructure.Data.MoqLocalDb;
+using Game.Infrastructure.Data.DataContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace Game.Infrastructure.Data.Repositories.GameRpsls
 {
@@ -9,24 +10,29 @@ namespace Game.Infrastructure.Data.Repositories.GameRpsls
     /// </summary>
     public class ChoiceRepository : IChoiceRepository
     {
+        private readonly AppDbContext _context;
+
+        public ChoiceRepository(AppDbContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
+
         /// <summary>
         /// Returns collection of all entities with type <see cref="Choice"/>
         /// </summary>
         /// <returns><see cref="IEnumerable{Choice}"/></returns>
-        public Task<IEnumerable<Choice>> GetAllAsync()
+        public async Task<IEnumerable<Choice>> GetAllAsync()
         {
-            return Task.FromResult(LocalDb.Current.Choices);
+            return await _context.Choices.ToListAsync();
         }
         /// <summary>
         /// Returns entity of type <see cref="Choice"/> by Id
         /// </summary>
         /// <param name="id">Unique identifier of entity <see cref="Choice"/> used as filter</param>
         /// <returns>Instance of class <see cref="Choice"/></returns>
-        public Task<Choice> GetByIdAsync(int id)
+        public async Task<Choice> GetByIdAsync(int id)
         {
-            var choice = LocalDb.Current.Choices.FirstOrDefault(c => c.Id == id);
-
-            return Task.FromResult(choice);
+            return await _context.Choices.FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

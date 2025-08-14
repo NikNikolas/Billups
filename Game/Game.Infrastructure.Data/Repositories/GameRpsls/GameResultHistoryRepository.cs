@@ -1,7 +1,8 @@
 ﻿using Game.Domain.Data.Abstractions.Repositories.GameRpsls;
 using Game.Domain.Data.Abstractions.Entities.GameRpsls;
 using Game.Domain.Data.Abstractions.Model;
-using Game.Infrastructure.Data.MoqLocalDb;
+using Microsoft.EntityFrameworkCore;
+using Game.Infrastructure.Data.DataContext;
 
 namespace Game.Infrastructure.Data.Repositories.GameRpsls
 {
@@ -10,16 +11,30 @@ namespace Game.Infrastructure.Data.Repositories.GameRpsls
     /// </summary>
     internal class GameResultHistoryRepository : IGameResultHistoryRepository
     {
+
+
+        /// <summary>
+        /// Db context
+        /// </summary>
+        private readonly AppDbContext _context;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="context"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public GameResultHistoryRepository(AppDbContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+        }
         /// <summary>
         /// Saves new record of entity type <see cref="GameResultHistory"/> in db asynchronous
         /// </summary>
         /// <param name="newRecord">Entity of type <see cref="GameResultHistory"/> that should be saved</param>
         /// <returns></returns>
-        public Task SaveAsync(GameResultHistory newRecord)
+        public async Task SaveAsync(GameResultHistory newRecord)
         {
-            LocalDb.Current.GameResultHistories.Add(newRecord);
-
-            return Task.CompletedTask;
+            await _context.GameResultHistories.AddAsync(newRecord);
+            await _context.SaveChangesAsync();
         }
 
         /// <summary>
@@ -27,13 +42,14 @@ namespace Game.Infrastructure.Data.Repositories.GameRpsls
         /// </summary>
         /// <param name="request">Object of type <see cref="GetAllHistoryModel"/> for filtering data</param>
         /// <returns>IEnumerable of <see cref="GameResultHistory"/></returns>
-        public Task<IEnumerable<GameResultHistory>> GetAllAsync(GetAllHistoryModel request)
+        public async Task<IEnumerable<GameResultHistory>> GetAllAsync(GetAllHistoryModel request)
         {
-            var histories = LocalDb.Current.GameResultHistories.OrderBy(h => h.PlayedDateTime)
+            var histories = await _context.GameResultHistories.OrderBy(h => h.PlayedDateTime)
                 .Skip((request.PageNumber - 1) * request.PageSize)
-                .Take(request.PageSize);
+                .Take(request.PageSize)
+                .ToListAsync();
 
-            return Task.FromResult(histories);
+            return histories;
         }
     }
 }
