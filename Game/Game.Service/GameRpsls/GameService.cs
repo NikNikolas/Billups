@@ -153,28 +153,11 @@ namespace Game.Service.GameRpsls
 
             response.Player = request.Player;
             response.Computer = (int)randomOpetionResult.Value;
-            response.Results = GetNameOfGameResult(gameResult);
+            response.Results = EnumHelper.GetNameOfGameResult(gameResult);
 
             _logger.LogInformation(LogMessageBuilder.GetFinishedMethodMessage());
 
             return Result.Success<PlayGameResponse>(response);
-        }
-
-        private string GetNameOfGameResult(GameResult result)
-        {
-            switch (result)
-            {
-                case GameResult.Lose:
-                    return "Lose";
-                case GameResult.Win:
-                    return "Win";
-                case
-                    GameResult.Tie:
-                    return "Tie";
-                default:
-                    throw new Exception($"Invalid value of {nameof(GameResult)}");
-            }
-            
         }
     }
 }

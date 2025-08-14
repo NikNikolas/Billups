@@ -5,6 +5,7 @@ using Game.Domain.Data.Abstractions.Model;
 using Game.Domain.Data.Abstractions.Repositories.GameRpsls;
 using Game.Service.Abstractions.Validators;
 using Game.Domain.DTO.GameRpsls.Requests;
+using Game.Domain.DTO.GameRpsls.Responses;
 
 namespace Game.Service.GameRpsls
 {
@@ -47,13 +48,15 @@ namespace Game.Service.GameRpsls
         /// </summary>
         /// <param name="filterRequest">Instance of model class <see cref="GetAllHistoryRequest"/> used for filtering</param>
         /// <returns></returns>
-        public async Task<IEnumerable<GameResultHistory>> GetAllAsync(GetAllHistoryRequest filterRequest)
+        public async Task<IEnumerable<GetGameResultHistoryResponse>> GetAllAsync(GetAllHistoryRequest filterRequest)
         {
             var request = _mapper.Map<GetAllHistoryModel>(filterRequest);
 
             var histories = await _repository.GetAllAsync(request);
 
-            return histories;
+            var response = _mapper.Map<IEnumerable<GetGameResultHistoryResponse>>(histories);
+
+            return response;
         }
     }
 }

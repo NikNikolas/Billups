@@ -4,6 +4,7 @@ using Game.Domain.Data.Abstractions.Model;
 using Game.Domain.DTO.GameRpsls.InternalModels;
 using Game.Domain.DTO.GameRpsls.Requests;
 using Game.Domain.DTO.GameRpsls.Responses;
+using Game.Infrastructure.Utilities.Helpers;
 
 namespace Game.Service.Mapper
 {
@@ -22,6 +23,8 @@ namespace Game.Service.Mapper
             CreateMap<Choice, GetChoiceResponse>();
             CreateMap<GameCalculationRequest, GameResultHistory>();
             CreateMap<GetAllHistoryRequest, GetAllHistoryModel>();
+            CreateMap<GameResultHistory, GetGameResultHistoryResponse>()
+                .ForMember(dest => dest.Result, opt => opt.MapFrom(src => EnumHelper.GetNameOfGameResult(src.Result)));
         }
     }
 }
